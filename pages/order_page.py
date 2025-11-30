@@ -10,6 +10,10 @@ from utils.locators import YaScooterOrderPageLocator as Loc
 class YaScooterOrderPage(BasePage):
     """Страница оформления заказа самоката."""
 
+    @allure.step("Дождаться загрузки страницы заказа")
+    def wait_loaded(self) -> None:
+        self.wait_visible(Loc.FIRST_NAME_INPUT)
+
     # --- Этап 1: Для кого самокат ---
     @allure.step("Заполнить поле 'Фамилия'")
     def set_last_name(self, last_name: str) -> None:
@@ -31,6 +35,26 @@ class YaScooterOrderPage(BasePage):
     @allure.step("Ввести номер телефона")
     def set_phone(self, phone: str) -> None:
         self.find_element(Loc.TELEPHONE_NUMBER_FIELD).send_keys(phone)
+
+    @allure.step("Проверить сообщение об ошибке в поле 'Имя'")
+    def is_first_name_error_displayed(self) -> bool:
+        return self.find_element(Loc.INCORRECT_FIRST_NAME_MESSAGE).is_displayed()
+
+    @allure.step("Проверить сообщение об ошибке в поле 'Фамилия'")
+    def is_last_name_error_displayed(self) -> bool:
+        return self.find_element(Loc.INCORRECT_LAST_NAME_MESSAGE).is_displayed()
+
+    @allure.step("Проверить сообщение об ошибке в поле 'Адрес'")
+    def is_address_error_displayed(self) -> bool:
+        return self.find_element(Loc.INCORRECT_ADDRESS_MESSAGE).is_displayed()
+
+    @allure.step("Проверить сообщение об ошибке в поле 'Метро'")
+    def is_subway_error_displayed(self) -> bool:
+        return self.find_element(Loc.INCORRECT_SUBWAY_MESSAGE).is_displayed()
+
+    @allure.step("Проверить сообщение об ошибке в поле 'Телефон'")
+    def is_phone_error_displayed(self) -> bool:
+        return self.find_element(Loc.INCORRECT_TELEPHONE_NUMBER_MESSAGE).is_displayed()
 
     @allure.step("Перейти к следующему шагу")
     def next_step(self) -> None:
@@ -59,6 +83,10 @@ class YaScooterOrderPage(BasePage):
     def submit_order(self) -> None:
         self.safe_click(Loc.ORDER_BUTTON)
 
+    @allure.step("Шаг аренды доступен")
+    def is_rent_step_ready(self) -> bool:
+        return self.wait_visible(Loc.ORDER_BUTTON).is_displayed()
+
     @allure.step("Подтвердить заказ")
     def confirm_order(self) -> None:
         self.safe_click(Loc.ACCEPT_ORDER_BUTTON)
@@ -71,6 +99,10 @@ class YaScooterOrderPage(BasePage):
     @allure.step("Перейти к статусу заказа")
     def go_to_status(self) -> None:
         self.safe_click(Loc.SHOW_STATUS_BUTTON)
+
+    @allure.step("Проверить отображение итоговой информации о заказе")
+    def is_order_completed_info_displayed(self) -> bool:
+        return self.wait_visible(Loc.ORDER_COMPLETED_INFO).is_displayed()
 
     # --- Групповые шаги ---
     @allure.step("Заполнить форму 'Для кого самокат'")

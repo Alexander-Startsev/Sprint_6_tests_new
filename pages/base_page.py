@@ -9,6 +9,7 @@ from selenium.common.exceptions import (
     StaleElementReferenceException,
 )
 from utils.urls import Urls
+from utils.locators import BasePageLocator
 
 
 class BasePage:
@@ -92,3 +93,14 @@ class BasePage:
     @allure.step("Текущий URL")
     def current_url(self) -> str:
         return self.driver.current_url
+
+    @allure.step("Дождаться, что URL не about:blank")
+    def wait_url_until_not_about_blank(self, timeout: int = 10):
+        return self._wait(timeout).until_not(EC.url_to_be("about:blank"))
+
+    @allure.step("Принять куки (если баннер есть)")
+    def accept_cookies_if_present(self):
+        try:
+            self.safe_click(BasePageLocator.COOKIE_ACCEPT_BUTTON)
+        except Exception:
+            pass
